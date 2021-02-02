@@ -8,9 +8,6 @@
         "start": "start node app.js",
         "dev": "nodemon node app.js"
     },
-    "keywords": [
-    "node"
-  ],
     "author": "Bharath",
     "license": "ISC",
     "dependencies": {

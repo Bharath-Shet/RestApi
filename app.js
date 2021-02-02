@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-    res.send('Health ok')
+    console.log('Health ok')
 })
 
 /*
