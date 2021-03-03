@@ -143,16 +143,26 @@ app.get('/rest/:id', (req, res) => {
 
 //Rest route 
 app.get('/rest', (req, res) => {
-    var condition = {}
-    if (req.query.mealtype && req.query.lcost && req.query.hcost) {
-        condition = { $and: [{ "type.mealtype": req.query.mealtype }, { cost: { $lt: (Number(req.query.hcost)), $gt: (Number(req.query.lcost)) } }] }
+  var condition ={};
+    //meal +cost
+    if(req.query.mealtype && req.query.lcost && req.query.hcost){
+      condition={$and:[{"type.mealtype":req.query.mealtype},{cost:{$lt:Number(req.query.hcost),$gt:Number(req.query.lcost)}}]}
     }
-    if (req.query.mealtype && req.query.cuisine) {
-        condition = { $and: [{ "type.mealtype": req.query.mealtype }, { "Cuisine.cuisine": req.query.cuisine }] }
-    } else if (req.query.mealtype) {
-        conditon = { "type.mealtype": req.query.mealtype }
-    } else if (req.query.city) {
-        condition = { city: req.query.city }
+    //meal +city
+    else if(req.query.mealtype && req.query.city){
+      condition={$and:[{"type.mealtype":req.query.mealtype},{city:req.query.city}]}
+    }
+    //meal +cuisine
+    else if(req.query.mealtype && req.query.cuisine){
+      condition={$and:[{"type.mealtype":req.query.mealtype},{"Cuisine.cuisine":req.query.cuisine}]}
+    }
+    //meal
+    else if(req.query.mealtype){
+      condition={"type.mealtype":req.query.mealtype}
+    }
+    //city
+    else if(req.query.city){
+      condition={city:req.query.city}
     }
     db.collection('restaurent').find(condition).toArray((err, result) => {
         if (err) throw err;
