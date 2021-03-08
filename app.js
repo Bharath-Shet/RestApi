@@ -156,6 +156,9 @@ app.get('/rest', (req, res) => {
     else if(req.query.mealtype && req.query.cuisine){
       condition={$and:[{"type.mealtype":req.query.mealtype},{"Cuisine.cuisine":req.query.cuisine}]}
     }
+    else if(req.query.lcost && req.query.hcost){
+        condition = {$and:[{cost:{$lt:Number(req.query.hcost),$gt:Number(req.query.lcost)}}]}
+    }
     //meal
     else if(req.query.mealtype){
       condition={"type.mealtype":req.query.mealtype}
@@ -169,7 +172,6 @@ app.get('/rest', (req, res) => {
         res.send(result)
     })
 })
-
 
 app.get('/meal', (req, res) => {
 
