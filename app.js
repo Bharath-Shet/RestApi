@@ -143,7 +143,13 @@ app.get('/rest/:id', (req, res) => {
 
 //Rest route 
 app.get('/rest', (req, res) => {
-  var condition ={};
+    var condition ={};
+    let sortedcondition = {cost:1};
+    
+    if(req.query.mealtype && req.query.sort){
+        condition= {"type.mealtype":req.query.mealtype}
+        sortedcondition = {cost:Number(req.query.sort)};
+    }
     //meal +cost
     if(req.query.mealtype && req.query.lcost && req.query.hcost){
       condition={$and:[{"type.mealtype":req.query.mealtype},{cost:{$lt:Number(req.query.hcost),$gt:Number(req.query.lcost)}}]}
@@ -167,7 +173,7 @@ app.get('/rest', (req, res) => {
     else if(req.query.city){
       condition={city:req.query.city}
     }
-    db.collection('restaurent').find(condition).toArray((err, result) => {
+    db.collection('restaurent').find(condition).sort(sortedcondition).toArray((err, result) => {
         if (err) throw err;
         res.send(result)
     })
@@ -183,7 +189,19 @@ app.get('/meal', (req, res) => {
 
 //city route
 app.get('/city', (req, res) => {
-    db.collection('city').find().toArray((err, result) => {
+    let sortedcondition = {city_name:1};
+    let limit = 100
+    if(req.query.sort && req.query.limit){
+        sortedcondition =  {city_name:Number(req.query.sort)};
+        limit = Number(req.query.limit)
+    }
+    else if(req.query.sort){
+        sortedcondition = {city_name:Number(req.query.sort)}
+    }
+    else if(req.query.limit){
+        limit = Number(req.query.limit)
+    }
+    db.collection('city').find().sort(sortedcondition).limit(limit).toArray((err, result) => {
         if (err) console.log(err);
         res.send(result);
     })
